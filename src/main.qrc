@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/MainView.qml</file>
+        <file>qml/ContactListView.qml</file>
+        <file>../resources/contact_img/head/1.png</file>
+        <file>../resources/contact_img/head/2.png</file>
+        <file>../resources/contact_img/head/3.png</file>
+        <file>../resources/contact_img/head/4.png</file>
+        <file>../resources/contact_img/body.png</file>
+        <file>../resources/contact_img/star.png</file>
+        <file>../resources/contacts.txt</file>
+        <file>../resources/star.png</file>
+        <file>qml/ContactImageView.qml</file>
+    </qresource>
+</RCC>
