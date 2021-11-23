@@ -3,15 +3,14 @@
 #include <QObject>
 #include <iostream>
 #include "QContactListModel.h"
-
-
-
-
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
 
     QGuiApplication app(argc, argv);
+    QDir::setCurrent(app.applicationDirPath());
+
     qmlRegisterType<QContactListModel>("Custom",1,0,"QContactListModel");
     QQuickView view;
     view.setSource(QUrl("qrc:///qml/MainView.qml"));

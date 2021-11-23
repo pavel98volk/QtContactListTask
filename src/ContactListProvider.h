@@ -1,51 +1,61 @@
-#pragma once;
+#pragma once
 #include <vector>
 #include <string>
 #include "Contact.h"
 #include <map>
+
 class ContactListProvider{
     public:
     ContactListProvider() = default;
     virtual std::vector<SimpleContact> getContacts() = 0;
-    virtual std::vector<SimpleContact> getChunk(const uint32_t& chunk) = 0;
-    virtual uint32_t getChunkCount() = 0;
-    virtual uint32_t getChunkSize() = 0;
+    virtual std::vector<SimpleContact> getChunk(const uint32_t index, const uint32_t size) = 0;
+    virtual uint32_t getLength() = 0;
     virtual void call(const SimpleContact& contact, void (*call_end_function)())  = 0;
 };
 
+
 class ContactListProviderFromFile: public ContactListProvider{
     public:
-    ContactListProviderFromFile(const std::string pathname):pathname(pathname){};
+    ContactListProviderFromFile(const std::string pathname);;
     std::vector<SimpleContact> getContacts() override;
-    std::vector<SimpleContact> getChunk(const uint32_t& chunk) override;
-    uint32_t getChunkCount() override;
-    uint32_t getChunkSize() override;
+    std::vector<SimpleContact> getChunk(const uint32_t index, const uint32_t size) override;
+    uint32_t getLength() override;
     void call(const SimpleContact& contact, void (*call_end_callback)()) override;
-
 private:
     std::string pathname;
 };
 
+
 /*
-class ContactService{
+//1. assumes contact list is sorted
+//2. search loads all the data and applies regex
+template <class T>
+class SimpleCircularArray{
 public:
-    ContactService(ContactListProvider&& provider){
-
+    SimpleCircularArray(int max_length){
+        this->max_length = max_length;
+        data.reserve(max_length);
     }
-private:
-    std::unique_ptr<ContactListProvider
-};*/
+    T& operator[](uint32_t index){
+        return data[index%max_length];
+    }
 
-//assumes that contacts are provided in alphabetical order.
-/*
-class AlphabeticalContactListProviderNaive: public ContactListProvider{
+private:
+    std::vector<T> data;
+    const uint32_t max_length;
+};
+
+class СachedSearchableCLP{
     public:
-    AlphabeticalContactListProviderNaive() = default;
+    СachedSearchableCLP() = default;
     void find_letter_chunk();
     void getLetters();
-    void getAlphabeticalChunk(char letter, uint32_t chunk_num);
     void getAlphabeticalContacts();
     protected:
     private:
-    std::map<char, int> letter_position;
-};*/
+    uint32_t chunk_size = 20, cache_size=50;
+    std::vector<Contact> circular_cahce;
+    std::vector<Contact> first_index;
+    std::map<char, int> letter_start;//the position of the first contact corresponding to each letter
+};
+*/

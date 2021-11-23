@@ -16,7 +16,7 @@ ColumnLayout{
     }
     StackLayout{
         id:stack_layout
-        currentIndex: 1
+        currentIndex: 0
         width:parent.width
         ContactListView{
             width:parent.width

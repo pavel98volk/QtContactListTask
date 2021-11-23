@@ -33,8 +33,10 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-     QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
+
 private:
+
     QList<Contact> contact_list;
     std::unique_ptr<ContactListProvider> contact_service;
 

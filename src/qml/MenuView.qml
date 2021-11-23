@@ -36,7 +36,6 @@ Item {
         Column{
             Layout.fillHeight:true
             Layout.preferredWidth: parent.height
-            anchors.right:parent.right
             Image{
                 height: parent.height
                 width: parent.height
