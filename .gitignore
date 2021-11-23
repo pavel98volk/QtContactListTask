@@ -1,0 +1,6 @@
+generated_files
+bin
+.*
+Makefile*
+*.user
+!.gitignore
