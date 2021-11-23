@@ -1,9 +1,10 @@
 #include "QContactListModel.h"
-
+#include <QFile>
+#include <QFileInfo>
 QContactListModel::QContactListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    this->contact_service = std::make_unique<ContactListProviderFromFile>("../resources/contacts.txt");
+    this->contact_service = std::make_unique<ContactListProviderFromFile>(":/resources/contacts.txt");
     std::vector<SimpleContact> contacts = this->contact_service->getContacts();
     for (SimpleContact& simple_contact : contacts){
         this->contact_list.append(Contact(simple_contact.getName(),simple_contact.getNumber(),false));

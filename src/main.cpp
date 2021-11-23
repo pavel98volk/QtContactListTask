@@ -4,12 +4,14 @@
 #include <iostream>
 #include "QContactListModel.h"
 #include <QDir>
-
+#include <QDirIterator>
 int main(int argc, char *argv[])
 {
 
+
+
     QGuiApplication app(argc, argv);
-    QDir::setCurrent(app.applicationDirPath());
+    //QDir::setCurrent(app.applicationDirPath());
 
     qmlRegisterType<QContactListModel>("Custom",1,0,"QContactListModel");
     QQuickView view;

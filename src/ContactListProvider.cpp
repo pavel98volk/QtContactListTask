@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 #include <QDebug>
+#include <exception>
+#include <QFile>
 
 uint32_t countLines(std::string pathname){
     std::string s;
@@ -18,16 +20,29 @@ uint32_t countLines(std::string pathname){
     return line_count;
 }
 
+
 ContactListProviderFromFile::ContactListProviderFromFile(const std::string pathname):pathname(pathname){}
 
 
 std::vector<SimpleContact> ContactListProviderFromFile::getContacts(){
-    std::ifstream in (this->pathname, std::ifstream::in);
+  /* // replaced by packaged qrc resource
+  std::ifstream in;
+  in.open(this->pathname);
+  if(!in.is_open()){
+  throw std::runtime_error("Failed to open file with contacts in ContactListProviderFromFile");
+  }*/
+  //1. open file and initialize filestream
+  QFile file(this->pathname.c_str());
+  if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+      throw std::runtime_error("Could not open the file!");
+  QTextStream in(&file);
+
   std::vector<SimpleContact> result;
   std::string line_buffer;
 
-  while(!in.eof()){
-    getline(in, line_buffer);
+  while(!file.atEnd()){
+    line_buffer = in.readLine().toStdString();
+    //getline(in, line_buffer)
     if (line_buffer.find(",") != std::string::npos) {
         result.push_back(SimpleContact(line_buffer.substr(0, line_buffer.find(",")), line_buffer.substr(1, line_buffer.find(","))));
     }
@@ -38,17 +53,24 @@ std::vector<SimpleContact> ContactListProviderFromFile::getContacts(){
 std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t index, const uint32_t size){
     std::string s;
     uint32_t line_count{0};
-    std::ifstream in(this->pathname,std::ifstream::in);
+    QFile file(this->pathname.c_str());
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        throw std::runtime_error("Could not open the file!");
+    QTextStream in(&file);
 
-    while(line_count < index && !in.eof()){
-      in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    while(line_count < index && !file.atEnd()){
+      in.readLine();
+      //in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      line_count++;
     }
     std::vector<SimpleContact> result;
     result.reserve(size);
     std::string line_buffer;
-    while(line_count < index+size && !in.eof()){
-      getline(in, line_buffer);
+    while(line_count < index+size && !file.atEnd()){
+      line_buffer = in.readLine().toStdString();
       result.push_back(SimpleContact(line_buffer.substr(0, line_buffer.find(",")), line_buffer.substr(1, line_buffer.find(","))));
+      line_count++;
     }
     result.shrink_to_fit();
     return result;
