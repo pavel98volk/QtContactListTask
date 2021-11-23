@@ -5,12 +5,13 @@ Item {
     width:parent.width;
     required property color backgroundColor
     required property int headType
+    required property bool circular
 
     Rectangle{
         anchors.fill:parent;
         color:parent.backgroundColor
         anchors.left:parent.left
-        radius:width*0.5
+        radius:circular?width*0.5:0
         clip: true;
         z:1
         Image{

@@ -33,6 +33,7 @@ ListView {
 
             backgroundColor:imageColor
             headType:imageHeadType
+            circular:true
         }
         Image{
             visible:favourite
