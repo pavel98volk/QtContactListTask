@@ -1,14 +1,13 @@
 #include "QContactListModel.h"
 #include <QFile>
+#include<QDebug>
 #include <QFileInfo>
 QContactListModel::QContactListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    this->contact_service = std::make_unique<ContactListProviderFromFile>(":/resources/contacts.txt");
-    std::vector<SimpleContact> contacts = this->contact_service->getContacts();
-    for (SimpleContact& simple_contact : contacts){
-        this->contact_list.append(Contact(simple_contact.getName(),simple_contact.getNumber(),false));
-    }
+    this->contact_service = std::make_unique<CachedSearchableContactService>(":/resources/contacts.txt");
+    this->favourites = std::make_unique<FavouritesServiceFromFile>("./fav.txt");
+    this->favourites->load();
 }
 
 QVariant QContactListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -33,7 +32,7 @@ int QContactListModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return this->contact_list.length();
+    return this->contact_service->list_length();
     // FIXME: Implement me!
 }
 
@@ -44,16 +43,15 @@ QVariant QContactListModel::data(const QModelIndex &index, int role) const
 
     switch(role){
     case NameRole:
-        return QVariant(QString::fromStdString(this->contact_list[index.row()].getName()));
+        return QVariant(QString::fromStdString(this->contact_service->get(index.row()).getName()));
     case NumberRole:
-        return QVariant(QString::fromStdString(this->contact_list[index.row()].getNumber()));
+        return QVariant(QString::fromStdString(this->contact_service->get(index.row()).getNumber()));
     case ImageColorRole:
-        return QVariant(QString::fromStdString(this->contact_list[index.row()].getImageColor()));
+        return QVariant(QString::fromStdString(this->contact_service->get(index.row()).getImageColor()));
     case ImageHeadTypeRole:
-        return QVariant(this->contact_list[index.row()].getHeadType());
+        return QVariant(this->contact_service->get(index.row()).getHeadType());
     case FavouriteRole:
-        return QVariant(this->contact_list[index.row()].getFavourite());
-
+        return QVariant(favourites->contains(this->contact_service->get(index.row()).getName()));
     }
 
     return QVariant();

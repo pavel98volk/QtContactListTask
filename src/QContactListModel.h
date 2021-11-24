@@ -3,7 +3,8 @@
 #include <QList>
 #include <memory>
 #include "Contact.h"
-#include "ContactListProvider.h"
+#include "FavouritesService.h"
+#include "ContactService.h"
 class QContactListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -36,8 +37,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
-
-    QList<Contact> contact_list;
-    std::unique_ptr<ContactListProvider> contact_service;
+    std::unique_ptr<ContactService> contact_service;
+    std::unique_ptr<FavouritesService> favourites;
 
 };

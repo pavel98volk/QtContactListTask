@@ -40,10 +40,10 @@ private:
     bool favourite;
 };
 
-
 class GeneratedPhotoContact: virtual public SimpleContact{
 public:
-    GeneratedPhotoContact(std::string name, std::string number);;
+    GeneratedPhotoContact(std::string name, std::string number);
+    GeneratedPhotoContact(const SimpleContact& contact);
     std::string getImageColor()const{return this->color;}
     int getHeadType()const;
 
@@ -51,10 +51,13 @@ private:
     uint8_t head_type;
     std::string color;
 };
+
+#define Contact GeneratedPhotoContact
+/*
 class Contact: public StarrableContact, public GeneratedPhotoContact{
 public:
     Contact(std::string name, std::string number, bool favourite):
         SimpleContact(name, number),
-        StarrableContact(name, number, favourite),
+        //StarrableContact(name, number, favourite),
         GeneratedPhotoContact(name, number){};
-};
+};*/

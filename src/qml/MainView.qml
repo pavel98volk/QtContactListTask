@@ -18,15 +18,16 @@ ColumnLayout{
         id:stack_layout
         currentIndex: 0
         width:parent.width
+        property var contactModel:QContactListModel{}
         ContactListView{
             width:parent.width
-            model:QContactListModel{}
+            model:parent.contactModel
         }
 
         ContactGridView{
             width:parent.width
             height:parent.height
-            model:QContactListModel{}
+            model:parent.contactModel
         }
     }
     //anchors.fill: parent

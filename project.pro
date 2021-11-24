@@ -18,14 +18,19 @@ QT += quick
 SOURCES += src/main.cpp \
     src/Contact.cpp \
     src/ContactListProvider.cpp \
-    src/QContactListModel.cpp
+    src/ContactService.cpp \
+    src/FavouritesService.cpp \
+    src/QContactListModel.cpp \
+    src/utils.cpp
 RESOURCES += src/main.qrc
 
 HEADERS += \
     src/Contact.h \
     src/ContactListProvider.h \
+    src/ContactService.h \
+    src/FavouritesService.h \
     src/QContactListModel.h \
-    src/utils.hpp
+    src/utils.h
 
 DESTDIR=bin
 OBJECTS_DIR=generated_files

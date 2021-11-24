@@ -6,6 +6,6 @@ This is a Qt Quick application (build with qmake) that is basically an example o
 2. search: not completed
 3. alphabetical jump: not completed
 4. call: not completed
-5. chunk retrieving: not completed
+5. chunk retrieving: completed
 6. favourites: not completed
 7. alphabetical jump: not completed

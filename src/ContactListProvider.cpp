@@ -51,7 +51,6 @@ std::vector<SimpleContact> ContactListProviderFromFile::getContacts(){
 }
 
 std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t index, const uint32_t size){
-    std::string s;
     uint32_t line_count{0};
     QFile file(this->pathname.c_str());
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -59,7 +58,7 @@ std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t 
     QTextStream in(&file);
 
 
-    while(line_count < index && !file.atEnd()){
+    while(line_count < index && !in.atEnd()){
       in.readLine();
       //in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       line_count++;
@@ -67,17 +66,31 @@ std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t 
     std::vector<SimpleContact> result;
     result.reserve(size);
     std::string line_buffer;
-    while(line_count < index+size && !file.atEnd()){
+    try{
+    while(line_count < index+size && !in.atEnd()){
       line_buffer = in.readLine().toStdString();
       result.push_back(SimpleContact(line_buffer.substr(0, line_buffer.find(",")), line_buffer.substr(1, line_buffer.find(","))));
       line_count++;
+    }
+    } catch(...){
+        qDebug() <<"caught something";
     }
     result.shrink_to_fit();
     return result;
 }
 
 uint32_t ContactListProviderFromFile::getLength(){
-  return countLines(this->pathname);
+    //return countLines(this->pathname);
+    uint32_t line_count{0};
+    QFile file(this->pathname.c_str());
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        throw std::runtime_error("Could not open the file!");
+    QTextStream in(&file);
+    while( !in.atEnd())
+    {   in.readLine();
+        line_count++;
+    }
+    return line_count;
 }
 
 void ContactListProviderFromFile::call(const SimpleContact& contact, void (*call_end_callback)()){

@@ -26,25 +26,8 @@ private:
 };
 
 
+
 /*
-//1. assumes contact list is sorted
-//2. search loads all the data and applies regex
-template <class T>
-class SimpleCircularArray{
-public:
-    SimpleCircularArray(int max_length){
-        this->max_length = max_length;
-        data.reserve(max_length);
-    }
-    T& operator[](uint32_t index){
-        return data[index%max_length];
-    }
-
-private:
-    std::vector<T> data;
-    const uint32_t max_length;
-};
-
 class СachedSearchableCLP{
     public:
     СachedSearchableCLP() = default;

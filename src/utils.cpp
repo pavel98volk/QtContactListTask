@@ -1,5 +1,5 @@
-#pragma once
-#include <string>
+#include "utils.h"
+
 uint32_t crc32_checksum(const std::string message) {
    uint32_t byte, crc, mask;
 
@@ -24,3 +24,5 @@ uint32_t getNumberBits(const uint32_t number, const uint from, const uint to){
     }
     return (number & mask)>>from;
 }
+
+

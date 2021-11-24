@@ -1,5 +1,5 @@
 #include "Contact.h"
-#include "utils.hpp"
+#include "utils.h"
 #include<QDebug>
 
 SimpleContact::SimpleContact(std::string name, std::string number):name(name),number(number){}
@@ -20,6 +20,15 @@ bool StarrableContact::getFavourite() const{
 const char hex_symbols[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 GeneratedPhotoContact::GeneratedPhotoContact(std::string name, std::string number):SimpleContact(name, number){
     int checksum = crc32_checksum(name);
+    this->head_type = getNumberBits(checksum,12,13)+1;
+    this->color = "#";
+    color.push_back(hex_symbols[getNumberBits(checksum,0,2)+8]);
+    color.push_back(hex_symbols[getNumberBits(checksum,4,6)+8]);
+    color.push_back(hex_symbols[getNumberBits(checksum,7,9)+8]);
+}
+
+GeneratedPhotoContact::GeneratedPhotoContact(const SimpleContact &contact):SimpleContact(contact){
+    unsigned int checksum = crc32_checksum(contact.getName());
     this->head_type = getNumberBits(checksum,12,13)+1;
     this->color = "#";
     color.push_back(hex_symbols[getNumberBits(checksum,0,2)+8]);
