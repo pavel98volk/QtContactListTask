@@ -1,18 +1,29 @@
 import QtQuick 2.3
 import QtQuick.Layouts 1.15
+import Custom 1.0
 Item {
+    id:menu_root
     required property StackLayout contact_presenter
+    required property QContactListModel model
+
     RowLayout{
         width: parent.width;
         height: parent.height
         Column{
+
             Layout.fillHeight:true
             Layout.preferredWidth:parent.height
             Image{
                 height: parent.height
                 width: parent.height
-                source: "../resources/star.png"
+                source: !menu_root.model.headerData(0,Qt.Horizontal)?"../resources/star.png":"../resources/crossed_star.png"
                 fillMode:Image.Stretch
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                   // NOT WORKING menu_root.model.setHeaderData(0Qt.Horizontal) = !menu_root.model.headerData(0,Qt.Horizontal);
+                }
             }
         }
         Column{

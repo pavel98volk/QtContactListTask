@@ -11,6 +11,7 @@ GridView{
         required property bool favourite
         required property color imageColor
         required property int imageHeadType
+        required property var model
         width: cellWidth
         height: cellHeight
         border{width: 2; color: "black"}
@@ -27,25 +28,32 @@ GridView{
             anchors.top:parent.top
             visible:favourite
         }
-    }
-}
-
-/*
-GridView {
-    cellHeight: 50
-    cellWidth:  50
-    model:
-    delegate: Item {
-        required property string name
-        required property bool favourite
-        required property color imageColor
-        required property int imageHeadType
-        ContactImageView{
+        MouseArea{
+            id: buttonMouseArea
             anchors.fill: parent
-            backgroundColor:imageColor
-            headType:imageHeadType
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button === Qt.RightButton) {
+                    parent.rightButtonClick();
+                } else if (mouse.button === Qt.LeftButton) {
+                     parent.leftButtonClick();
+                }
+            }
+        }
+        signal leftButtonClick
+        onLeftButtonClick:model.favourite = !model.favourite
+        signal rightButtonClick;
+        onRightButtonClick:{
+            var dialog = Qt.createComponent("FavouriteDialogView.qml").createObject(this, {
+                fav:favourite,
+                name:name,
+                parent:root,
+                onSetFavourite: function(new_value){
+                    model.favourite = new_value;
+                }
+
+            });
+            dialog.setFavourite.connect((new_value)=>{model.favourite = new_value});
         }
     }
 }
-
-*/

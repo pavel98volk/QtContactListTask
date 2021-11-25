@@ -2,6 +2,8 @@ import QtQuick 2.3
 
 ListView {
     clip: true
+    required property var root;
+
     delegate: Item{
         height:40
         width:parent?parent.width:0
@@ -9,6 +11,7 @@ ListView {
         required property bool favourite
         required property color imageColor
         required property int imageHeadType
+        required property var model
 
         Rectangle
         {
@@ -36,12 +39,40 @@ ListView {
             circular:true
         }
         Image{
-            visible:favourite
-            height:parent.height
+            height: favourite?parent.height:0
             source: "../resources/star.png"
             anchors.right:parent.right
             fillMode:Image.PreserveAspectFit
         }
+
+        MouseArea{
+            id: buttonMouseArea
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button === Qt.RightButton) {
+                    parent.rightButtonClick();
+                } else if (mouse.button === Qt.LeftButton) {
+                     parent.leftButtonClick();
+                }
+            }
+        }
+        signal leftButtonClick
+        onLeftButtonClick:model.favourite = !model.favourite
+        signal rightButtonClick;
+        onRightButtonClick:{
+            var dialog = Qt.createComponent("FavouriteDialogView.qml").createObject(this, {
+                fav:favourite,
+                name:name,
+                parent:root,
+                onSetFavourite: function(new_value){
+                    model.favourite = new_value;
+                }
+
+            });
+            dialog.setFavourite.connect((new_value)=>{model.favourite = new_value});
+        }
+
         /*
         MouseArea {
             anchors.fill: parent

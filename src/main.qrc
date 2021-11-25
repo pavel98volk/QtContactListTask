@@ -15,5 +15,7 @@
         <file>qml/ContactGridView.qml</file>
         <file>qml/MenuView.qml</file>
         <file>../resources/crossed_star.png</file>
+        <file>qml/FavouriteDialogView.qml</file>
+        <file>qml/Button.qml</file>
     </qresource>
 </RCC>

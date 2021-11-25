@@ -2,17 +2,24 @@
 #include <QFile>
 #include<QDebug>
 #include <QFileInfo>
+
 QContactListModel::QContactListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    this->contact_service = std::make_unique<CachedSearchableContactService>(":/resources/contacts.txt");
-    this->favourites = std::make_unique<FavouritesServiceFromFile>("./fav.txt");
+    this->favourites = std::make_shared<FavouritesServiceFromFile>("./fav.txt");
     this->favourites->load();
+
+    this->contact_service = std::make_unique<CachedSearchableContactService>(this->favourites,":/resources/contacts.txt");
 }
 
 QVariant QContactListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    // FIXME: Implement me!
+    switch(section){
+        case 0: // favourites filter status
+            return this->contact_service->getFavFilterStatus();
+        case 1: // search string value
+            return QVariant(QString::fromStdString(this->contact_service->getSearchString()));
+    }
 }
 
 bool QContactListModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
@@ -60,9 +67,15 @@ QVariant QContactListModel::data(const QModelIndex &index, int role) const
 bool QContactListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (data(index, role) != value) {
-        // FIXME: Implement me!
-        emit dataChanged(index, index, QVector<int>() << role);
-        return true;
+        if(role == FavouriteRole){
+            if(value == true){
+                favourites->insert(this->contact_service->get(index.row()).getName());
+            } else {
+              favourites->remove(this->contact_service->get(index.row()).getName());
+            }
+            emit dataChanged(index, index, QVector<int>() << role);
+            return true;
+        }
     }
     return false;
 }
@@ -83,5 +96,18 @@ QHash<int, QByteArray> QContactListModel::roleNames() const
     roles[ImageColorRole] = "imageColor";
     roles[ImageHeadTypeRole] = "imageHeadType";
     roles[FavouriteRole] = "favourite";
+    roles[StartCallRole] = "startCall";
+
     return roles;
 }
+/*
+void QContactListModel::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    menu.addAction(new QAction("Action 1", this));
+    menu.addAction(new QAction("Action 2", this));
+    menu.addAction(new QAction("Action 3", this));
+
+    // Place the menu in the right position and show it.
+    menu.exec(event->globalPos());
+}*/

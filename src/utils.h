@@ -57,6 +57,18 @@ private:
     std::unique_ptr<T> data;
 };
 
+template <class T>
+class AutoKeyIntMap: public std::map<int, T>{
+public:
+    int insert_genkey(T data){
+        int key = rand();
+        while (this->find(key) != this->end()) {
+            key = rand();
+        }
+        this->insert({key, data});
+    }
+};
+
 
 uint32_t crc32_checksum(const std::string message);
 
