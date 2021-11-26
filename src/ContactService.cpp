@@ -26,7 +26,7 @@ Contact CachedProvider::get(uint32_t index){
     }
     //3. if index is beyond the cached part, this is concidered as jump and the whole cache is reloaded
     else if (current_chunk < chunk_first || current_chunk >= chunk_first+chunk_count){
-        qDebug()<<"loading new chunk..";
+        qDebug()<<"reloading chunks...";
         calculate_first_chunk(index);
         cached_chunks.init(chunk_count,this->getInitialChunks());
     }
@@ -100,7 +100,7 @@ void CachedSearchableContactService::search(std::string new_search_string){
                 && new_search_string == search_string.substr(0,search_string.length()-1)){
         search_string == new_search_string;
         std::vector<Contact> old_filtered = std::move(filtered_results);
-        this->search_filter(old_filtered, filtered_results);
+        search_filter(old_filtered, filtered_results);
 
     }
     else{
@@ -114,8 +114,8 @@ void CachedSearchableContactService::search(std::string new_search_string){
             search_filter(full_list, filtered_results);
         } else{
             std::vector<Contact> temp_results;
-            this->favourites_filter(full_list, temp_results);
-            this->search_filter(temp_results, filtered_results);
+            favourites_filter(full_list, temp_results);
+            search_filter(temp_results, filtered_results);
         }
     }
 }
@@ -136,8 +136,6 @@ void CachedSearchableContactService::setFavFilter(bool new_value){
             favourites_filter(full_list, filtered_results);
         }
         favourites_service->listenToChange([this](FavouritesService::CHANGE_TYPE change_type,std::string value)->void{onFavouritesChange(change_type,value);});
-        qDebug() <<filtered_results.size();
-
     } else{
         if(search_string != ""){
             search_filter(full_list, filtered_results);
@@ -145,6 +143,26 @@ void CachedSearchableContactService::setFavFilter(bool new_value){
             filtered_results.clear();
         }
     }
+}
+
+void CachedSearchableContactService::onFavouritesChange(FavouritesService::CHANGE_TYPE change_type, std::string value){
+    switch(change_type){
+        case FavouritesService::CHANGE_TYPE::Remove:{
+            std::vector<Contact> old_filtered = std::move(filtered_results);
+            favourites_filter(old_filtered, filtered_results);
+        } break;
+        case FavouritesService::CHANGE_TYPE::Insert:
+        case FavouritesService::CHANGE_TYPE::UpdateAll:{
+            if(search_string!=""){
+                std::vector<Contact> temp_results;
+                favourites_filter(full_list, temp_results);
+                search_filter(temp_results, filtered_results);
+            } else{
+                favourites_filter(full_list, filtered_results);
+            }
+        }
+    }
+    qDebug() <<filtered_results.size();
 }
 
 void CachedSearchableContactService::favourites_filter(const std::vector<GeneratedPhotoContact> &copy_from, std::vector<GeneratedPhotoContact> &copy_to){

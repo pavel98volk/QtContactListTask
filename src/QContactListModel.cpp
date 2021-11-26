@@ -16,7 +16,7 @@ QVariant QContactListModel::headerData(int section, Qt::Orientation orientation,
 {
     switch(section){
         case 0: // favourites filter status
-            return this->contact_service->getFavFilterStatus();
+            return this->contact_service->getFavFilterActive();
         case 1: // search string value
             return QVariant(QString::fromStdString(this->contact_service->getSearchString()));
     }
@@ -69,9 +69,24 @@ bool QContactListModel::setData(const QModelIndex &index, const QVariant &value,
     if (data(index, role) != value) {
         if(role == FavouriteRole){
             if(value == true){
-                favourites->insert(this->contact_service->get(index.row()).getName());
+                if(contact_service->getFavFilterActive()){
+                    beginResetModel();
+                    favourites->insert(this->contact_service->get(index.row()).getName());
+                    endResetModel();
+                }
+                else{
+                    favourites->insert(this->contact_service->get(index.row()).getName());
+                }
             } else {
-              favourites->remove(this->contact_service->get(index.row()).getName());
+                if(contact_service->getFavFilterActive()){
+                    qDebug()<<"removing...";
+                    beginResetModel();
+                    favourites->remove(this->contact_service->get(index.row()).getName());
+                    endResetModel();
+                }
+                else{
+                    favourites->remove(this->contact_service->get(index.row()).getName());
+                }
             }
             emit dataChanged(index, index, QVector<int>() << role);
             return true;
@@ -102,7 +117,7 @@ QHash<int, QByteArray> QContactListModel::roleNames() const
 }
 
 bool QContactListModel::getFavOnly(){
-    return contact_service->getFavFilterStatus();
+    return contact_service->getFavFilterActive();
 }
 
 void QContactListModel::setFavOnly(bool new_value){

@@ -5,8 +5,7 @@ This is a Qt Quick application (build with qmake) that is basically an example o
 0. grid layout: **completed** (pictures-only?)
 1. pictures: **completed** (generated from name checksum)
 2. search: **completed** (uses regex over full list, therefore disables chunk retrieving)
-3. alphabetical jump: **not completed**
-4. call: **not completed**
-5. chunk retrieving: **completed**
-6. favourites: **completed** (saved to local file on change)
-7. alphabetical jump: **not completed**
+3. chunk retrieving: **completed**
+4. favourites: **completed** (saved to local file on change)
+5. alphabetical jump: **not completed**
+6. call: **not completed**

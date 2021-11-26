@@ -10,20 +10,19 @@ FavouritesServiceFromFile::FavouritesServiceFromFile(std::string filename)
 
 void FavouritesServiceFromFile::insert(std::string name)
 {
+    name_set.insert(name);
+    this->store();
     for(const auto& listener: listeners){
         listener.second(CHANGE_TYPE::Insert,name);
     }
-    name_set.insert(name);
-    this->store();
-
 }
 void FavouritesServiceFromFile::remove(std::string name)
 {
+    name_set.erase(name);
+    this->store();
     for(const auto& listener: listeners){
         listener.second(CHANGE_TYPE::Remove,name);
     }
-    name_set.erase(name);
-    this->store();
 }
 bool FavouritesServiceFromFile::contains(std::string name)
 {

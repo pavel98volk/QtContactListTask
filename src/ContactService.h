@@ -17,7 +17,7 @@ public:
     virtual Contact get(uint32_t index) = 0;
     virtual void search(std::string search_string) = 0;
     virtual void setFavFilter(bool new_value) = 0;
-    virtual bool getFavFilterStatus() = 0;
+    virtual bool getFavFilterActive() = 0;
     virtual std::string getSearchString() =0;
 };
 
@@ -64,12 +64,10 @@ public:
     void search(std::string new_search_string) override;
 
     void setFavFilter(bool new_value) override;
-    bool getFavFilterStatus() override{return this->favourites_only;}
+    bool getFavFilterActive() override{return this->favourites_only;}
     std::string getSearchString() override{return this->search_string;}
 private:
-    void onFavouritesChange(FavouritesService::CHANGE_TYPE change_type,std::string value){
-
-    }
+    void onFavouritesChange(FavouritesService::CHANGE_TYPE change_type,std::string value);
     void favourites_filter(const std::vector<Contact>& copy_from, std::vector<Contact>& copy_to);
     void search_filter(const std::vector<Contact>& copy_from, std::vector<Contact>& copy_to);
     CachedProvider cached_provider;
