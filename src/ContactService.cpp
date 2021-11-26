@@ -66,3 +66,99 @@ std::vector<MultigetFuture<std::vector<GeneratedPhotoContact> > > CachedProvider
 void CachedProvider::calculate_first_chunk(uint32_t central_index){
     chunk_first = (int(central_index) - int((chunk_count-1)*chunk_size)/2)/int(chunk_size);
 }
+
+uint32_t CachedSearchableContactService::list_length(){
+    if(search_string == "" && !favourites_only){
+        return cached_provider.length();
+    } else{
+        return filtered_results.size();
+    }
+}
+
+GeneratedPhotoContact CachedSearchableContactService::get(uint32_t index){
+    if(search_string == "" && !favourites_only){
+        if(full_list.size() != 0){
+            return full_list[index];
+        }
+        return cached_provider.get(index);
+    } else{
+        return filtered_results[index];
+    }
+}
+
+void CachedSearchableContactService::search(std::string new_search_string){
+    tolower_inplace(new_search_string);
+    if(search_string == new_search_string){
+        return;
+    }
+    if(full_list.size() == 0){
+        full_list = cached_provider.getAllWithoutCaching();
+    }
+    //if filtered_results are populated
+    if((search_string !="" || favourites_only)
+                // and the last letter was appended to the string
+                && new_search_string == search_string.substr(0,search_string.length()-1)){
+        search_string == new_search_string;
+        std::vector<Contact> old_filtered = std::move(filtered_results);
+        this->search_filter(old_filtered, filtered_results);
+
+    }
+    else{
+        search_string = new_search_string;
+        if(search_string == ""){
+            if(favourites_only){
+                favourites_filter(full_list, filtered_results);
+            }
+        }
+        else if (!favourites_only){
+            search_filter(full_list, filtered_results);
+        } else{
+            std::vector<Contact> temp_results;
+            this->favourites_filter(full_list, temp_results);
+            this->search_filter(temp_results, filtered_results);
+        }
+    }
+}
+
+void CachedSearchableContactService::setFavFilter(bool new_value){
+    if(favourites_only == new_value){
+        return;
+    }
+    if(full_list.size() == 0){
+        full_list = cached_provider.getAllWithoutCaching();
+    }
+    this->favourites_only = new_value;
+    if(new_value == true){
+        if(search_string!=""){
+            std::vector<Contact> old_filtered = std::move(filtered_results);
+            favourites_filter(old_filtered, filtered_results);
+        } else{
+            favourites_filter(full_list, filtered_results);
+        }
+        favourites_service->listenToChange([this](FavouritesService::CHANGE_TYPE change_type,std::string value)->void{onFavouritesChange(change_type,value);});
+        qDebug() <<filtered_results.size();
+
+    } else{
+        if(search_string != ""){
+            search_filter(full_list, filtered_results);
+        } else{
+            filtered_results.clear();
+        }
+    }
+}
+
+void CachedSearchableContactService::favourites_filter(const std::vector<GeneratedPhotoContact> &copy_from, std::vector<GeneratedPhotoContact> &copy_to){
+    copy_to.clear();
+    if(favourites_service != nullptr){
+        std::copy_if (copy_from.begin(), copy_from.end(), std::back_inserter(copy_to), [this](const Contact& c){return favourites_service->contains(c.getName());} );
+    } else{
+        std::copy(copy_from.begin(), copy_from.end(), std::back_inserter(copy_to));
+    }
+}
+
+void CachedSearchableContactService::search_filter(const std::vector<GeneratedPhotoContact> &copy_from, std::vector<GeneratedPhotoContact> &copy_to){
+    copy_to.clear();
+    std::regex search_expr (".*"+search_string+".*");
+    std::copy_if (copy_from.begin(), copy_from.end(), std::back_inserter(copy_to), [search_expr](const Contact& c){return std::regex_match(tolower(c.getName()),search_expr);} );
+
+}

@@ -17,5 +17,6 @@
         <file>../resources/crossed_star.png</file>
         <file>qml/FavouriteDialogView.qml</file>
         <file>qml/Button.qml</file>
+        <file>../resources/disabled_star.png</file>
     </qresource>
 </RCC>

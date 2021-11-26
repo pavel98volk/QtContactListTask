@@ -100,14 +100,25 @@ QHash<int, QByteArray> QContactListModel::roleNames() const
 
     return roles;
 }
-/*
-void QContactListModel::contextMenuEvent(QContextMenuEvent *event)
-{
-    QMenu menu(this);
-    menu.addAction(new QAction("Action 1", this));
-    menu.addAction(new QAction("Action 2", this));
-    menu.addAction(new QAction("Action 3", this));
 
-    // Place the menu in the right position and show it.
-    menu.exec(event->globalPos());
-}*/
+bool QContactListModel::getFavOnly(){
+    return contact_service->getFavFilterStatus();
+}
+
+void QContactListModel::setFavOnly(bool new_value){
+    this->beginResetModel();
+    contact_service->setFavFilter(new_value);
+    this->endResetModel();
+    favOnlyChanged();
+}
+
+QString QContactListModel::getSearchString(){
+    return contact_service->getSearchString().c_str();
+}
+
+void QContactListModel::setSearchString(QString new_value){
+    this->beginResetModel();
+    contact_service->search(new_value.toStdString());
+    this->endResetModel();
+    searchStringChanged();
+}

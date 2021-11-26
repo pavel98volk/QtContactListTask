@@ -62,10 +62,11 @@ class AutoKeyIntMap: public std::map<int, T>{
 public:
     int insert_genkey(T data){
         int key = rand();
-        while (this->find(key) != this->end()) {
+        while (this->count(key)) {
             key = rand();
         }
         this->insert({key, data});
+        return key;
     }
 };
 
@@ -73,3 +74,5 @@ public:
 uint32_t crc32_checksum(const std::string message);
 
 uint32_t getNumberBits(const uint32_t number, const uint from, const uint to);
+void tolower_inplace(std::string& data);
+std::string tolower(std::string data);

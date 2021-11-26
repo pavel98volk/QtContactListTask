@@ -9,24 +9,30 @@ Item {
     RowLayout{
         width: parent.width;
         height: parent.height
-        Column{
+        Item{
 
             Layout.fillHeight:true
             Layout.preferredWidth:parent.height
             Image{
                 height: parent.height
                 width: parent.height
-                source: !menu_root.model.headerData(0,Qt.Horizontal)?"../resources/star.png":"../resources/crossed_star.png"
+                source: !menu_root.model.favOnly?"../resources/disabled_star.png": fav_ma.containsMouse?"../resources/crossed_star.png":"../resources/star.png"
                 fillMode:Image.Stretch
+                MouseArea {
+                    id: fav_ma
+                    enabled:true
+                    hoverEnabled: true
+                    anchors.fill: parent
+                }
             }
             MouseArea {
-                anchors.fill: parent
+                anchors.fill:parent
                 onClicked: {
-                   // NOT WORKING menu_root.model.setHeaderData(0Qt.Horizontal) = !menu_root.model.headerData(0,Qt.Horizontal);
+                    menu_root.model.favOnly = !menu_root.model.favOnly;
                 }
             }
         }
-        Column{
+        Item{
             Layout.fillHeight:true
             Layout.fillWidth: true
             TextInput{
@@ -34,6 +40,9 @@ Item {
                 height:parent.height
                 width:parent.width
                 verticalAlignment:TextInput.AlignVCenter
+                text: model.search_string
+                onTextChanged: model.search_string = text
+                font.capitalization: Font.AllUppercase
                 Text{
                     height: parent.height;
                     width: parent.width
@@ -44,7 +53,7 @@ Item {
                 }
             }
         }
-        Column{
+        Item{
             Layout.fillHeight:true
             Layout.preferredWidth: parent.height
             Image{

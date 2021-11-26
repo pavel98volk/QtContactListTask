@@ -32,7 +32,8 @@ bool FavouritesServiceFromFile::contains(std::string name)
 
 int FavouritesServiceFromFile::listenToChange(std::function<void(FavouritesService::CHANGE_TYPE, std::string)>listener)
 {
-    return this->listeners.insert_genkey(listener);
+    int listener_id = this->listeners.insert_genkey(listener);
+    return listener_id;
 }
 
 void FavouritesServiceFromFile::removeListener(int listener_id)
@@ -68,8 +69,6 @@ void FavouritesServiceFromFile::load()
         //if (line_buffer.find(",") != std::string::npos) {
             if(line_buffer != ""){
                 name_set.insert(line_buffer);
-                qDebug()<<line_buffer.c_str()<<"|";
-
             }
         //}
     }
