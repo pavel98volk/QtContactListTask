@@ -1,4 +1,5 @@
-#include "ContactListProvider.h"
+#include "ContactListProviderFromFile.h"
+
 #include<fstream>
 #include<istream>
 #include <chrono>
@@ -7,52 +8,30 @@
 #include <exception>
 #include <QFile>
 
-uint32_t countLines(std::string pathname){
-    std::string s;
-    uint32_t line_count{0};
-    std::ifstream in;
-    in.open(pathname);
-    std::ofstream out;
-    while(!in.eof()) {
-    	getline(in, s);
-    	line_count++;	
-    }
-    return line_count;
-}
 
-
-ContactListProviderFromFile::ContactListProviderFromFile(const std::string pathname):pathname(pathname){}
+ContactListProviderFromFile::ContactListProviderFromFile(const QString pathname):pathname(pathname){}
 
 
 std::vector<SimpleContact> ContactListProviderFromFile::getContacts(){
-  /* // replaced by packaged qrc resource
-  std::ifstream in;
-  in.open(this->pathname);
-  if(!in.is_open()){
-  throw std::runtime_error("Failed to open file with contacts in ContactListProviderFromFile");
-  }*/
   //1. open file and initialize filestream
-  QFile file(this->pathname.c_str());
+  QFile file(this->pathname);
   if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
       throw std::runtime_error("Could not open the file!");
   QTextStream in(&file);
 
   std::vector<SimpleContact> result;
-  std::string line_buffer;
+  QString line_buffer;
 
-  while(!file.atEnd()){
-    line_buffer = in.readLine().toStdString();
-    //getline(in, line_buffer)
-    if (line_buffer.find(",") != std::string::npos) {
-        result.push_back(SimpleContact(line_buffer.substr(0, line_buffer.find(",")), line_buffer.substr(1, line_buffer.find(","))));
-    }
+  while(!in.atEnd()){
+      QStringList splitted = in.readLine().split(",");
+      result.push_back(SimpleContact(splitted.value(0), splitted.value(1)));
   }
   return result;
 }
 
 std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t index, const uint32_t size){
     uint32_t line_count{0};
-    QFile file(this->pathname.c_str());
+    QFile file(this->pathname);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         throw std::runtime_error("Could not open the file!");
     QTextStream in(&file);
@@ -66,23 +45,19 @@ std::vector<SimpleContact> ContactListProviderFromFile::getChunk(const uint32_t 
     std::vector<SimpleContact> result;
     result.reserve(size);
     std::string line_buffer;
-    try{
+
     while(line_count < index+size && !in.atEnd()){
-      line_buffer = in.readLine().toStdString();
-      result.push_back(SimpleContact(line_buffer.substr(0, line_buffer.find(",")), line_buffer.substr(1, line_buffer.find(","))));
+      QStringList splitted = in.readLine().split(",");
+      result.push_back(SimpleContact(splitted.value(0), splitted.value(1)));
       line_count++;
-    }
-    } catch(...){
-        qDebug() <<"caught something";
     }
     result.shrink_to_fit();
     return result;
 }
 
 uint32_t ContactListProviderFromFile::getLength(){
-    //return countLines(this->pathname);
     uint32_t line_count{0};
-    QFile file(this->pathname.c_str());
+    QFile file(this->pathname);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         throw std::runtime_error("Could not open the file!");
     QTextStream in(&file);

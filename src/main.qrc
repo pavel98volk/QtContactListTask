@@ -18,5 +18,7 @@
         <file>qml/FavouriteDialogView.qml</file>
         <file>qml/Button.qml</file>
         <file>../resources/disabled_star.png</file>
+        <file>qml/ContactsView.qml</file>
+        <file>qml/CallView.qml</file>
     </qresource>
 </RCC>

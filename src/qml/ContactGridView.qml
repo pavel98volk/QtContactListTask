@@ -3,6 +3,7 @@ import QtQuick 2.3
 
 
 GridView{
+    required property var root
     clip:true
     cellWidth: width/ Math.floor(width/100)
     cellHeight: width/ Math.floor(width/100)
@@ -12,6 +13,7 @@ GridView{
         required property color imageColor
         required property int imageHeadType
         required property var model
+
         width: cellWidth
         height: cellHeight
         border{width: 2; color: "black"}

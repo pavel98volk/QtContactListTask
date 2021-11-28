@@ -40,9 +40,9 @@ Item {
                 height:parent.height
                 width:parent.width
                 verticalAlignment:TextInput.AlignVCenter
-                text: model.search_string
-                onTextChanged: model.search_string = text
-                font.capitalization: Font.AllUppercase
+                //text: model.search_string
+                onTextChanged: model.search_string = text.toLowerCase()
+                //font.capitalization: Font.AllUppercase
                 Text{
                     height: parent.height;
                     width: parent.width

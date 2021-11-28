@@ -24,15 +24,7 @@ uint32_t getNumberBits(const uint32_t number, const uint from, const uint to){
     }
     return (number & mask)>>from;
 }
-void tolower_inplace(std::string& data){
-    std::for_each(data.begin(), data.end(), [](char & c){
-        c = ::tolower(c);
-    });
-}
-std::string tolower(std::string data){
-    tolower_inplace(data);
-    return data;
-}
+
 
 
 

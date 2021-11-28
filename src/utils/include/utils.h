@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <QString>
 #include <vector>
 #include <stdexcept>
 #include <future>
@@ -74,5 +74,3 @@ public:
 uint32_t crc32_checksum(const std::string message);
 
 uint32_t getNumberBits(const uint32_t number, const uint from, const uint to);
-void tolower_inplace(std::string& data);
-std::string tolower(std::string data);

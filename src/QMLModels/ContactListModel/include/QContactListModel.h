@@ -1,6 +1,7 @@
 #pragma once
 #include <QAbstractListModel>
 #include <QList>
+#include <QString>
 #include <memory>
 #include "Contact.h"
 #include "FavouritesService.h"
@@ -31,7 +32,7 @@ public:
     /*part for call dialog*/
     /*
     Q_PROPERTY(bool callActive READ isCallActive WRITE setEnabled)
-    Q_PROPERTY(std::string callerName READ getCallerName)
+    Q_PROPERTY(QString callerName READ getCallerName)
     Q_PROPERTY(bool callerNumber READ getCallerPhone)*/
 
     // Basic functionality:

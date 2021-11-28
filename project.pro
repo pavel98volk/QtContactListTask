@@ -4,7 +4,6 @@
 
 TEMPLATE = app
 TARGET = app
-INCLUDEPATH += ./src
 QT += quick
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -13,23 +12,43 @@ QT += quick
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += ./src
+INCLUDEPATH += ./src/Contact/src ./src/Contact/include
+INCLUDEPATH += ./src/ContactService/src ./src/ContactService/include
+INCLUDEPATH += ./src/FavouritesService/src ./src/FavouritesService/include
+INCLUDEPATH += ./src/QMLModels/ContactListModel/src ./src/QMLModels/ContactListModel/include
+INCLUDEPATH += ./src/ContactListProvider/src ./src/ContactListProvider/include
+INCLUDEPATH += ./src/utils/src ./src/utils/include
+
+
+
 # Input
 SOURCES += src/main.cpp \
-    src/Contact.cpp \
-    src/ContactListProvider.cpp \
-    src/ContactService.cpp \
-    src/FavouritesService.cpp \
-    src/QContactListModel.cpp \
-    src/utils.cpp
+    src/Contact/src/GeneratedImageContact.cpp \
+    src/Contact/src/SimpleContact.cpp \
+    src/ContactListProvider/src/ContactListProviderFromFile.cpp \
+    src/ContactService/src/CachedCLP.cpp \
+    src/ContactService/src/ContactServiceCachedImpl.cpp \
+    src/FavouritesService/src/FavouritesServiceLocalFileImpl.cpp \
+    src/QMLModels/ContactListModel/src/QContactListModel.cpp \
+    src/utils/src/utils.cpp
+
 RESOURCES += src/main.qrc
 
 HEADERS += \
-    src/Contact.h \
-    src/ContactListProvider.h \
-    src/ContactService.h \
-    src/FavouritesService.h \
-    src/QContactListModel.h \
-    src/utils.h
+    src/Contact/include/Contact.h \
+    src/Contact/include/GeneratedImageContact.h \
+    src/Contact/include/SimpleContact.h \
+    src/ContactListProvider/include/AlphabeticalContactListProvider.h \
+    src/ContactListProvider/include/ContactListProviderFromFile.h \
+    src/ContactService/include/CachedCLP.h \
+    src/ContactService/include/ContactService.h \
+    src/ContactService/include/ContactServiceCachedImpl.h \
+    src/FavouritesService/include/FavouritesService.h \
+    src/FavouritesService/include/FavouritesServiceLocalFileImpl.h \
+    src/QMLModels/ContactListModel/include/QContactListModel.h \
+    src/ContactListProvider/include/ContactListProvider.h \
+    src/utils/include/utils.h
 
 DESTDIR=bin
 OBJECTS_DIR=generated_files
