@@ -17,17 +17,18 @@ Item{
             Layout.preferredHeight:30
             contact_presenter: stack_layout
         }
+
         StackLayout{
             id:stack_layout
             currentIndex: 0
             width:parent.width
+
             ContactListView{
                 root: contacts_root
                 width:parent.width
                 height:parent.height
                 model:root.contactModel
             }
-
             ContactGridView{
                 root:contacts_root
                 width:parent.width

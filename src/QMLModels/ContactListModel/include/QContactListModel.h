@@ -21,9 +21,7 @@ public:
         StartCallRole //only used to start call
     };
 
-
-
-    // Header:
+    // Header-related functionality...:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
@@ -40,7 +38,6 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    // Editable:
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
 
@@ -63,6 +60,7 @@ public:
     void setFavOnly(bool new_value);
     QString getSearchString();
     void setSearchString(QString new_value);
+
 signals:
     void favOnlyChanged();
     void searchStringChanged();
